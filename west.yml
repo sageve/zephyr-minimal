@@ -5,7 +5,7 @@ manifest:
     remote: zephyrproject
   remotes:
     - name: zephyrproject
-      url-base: https://github.com/zephyrproject-rtos
+      url-base: https://github.com/sageve
   projects:
     - name: zephyr
       repo-path: zephyr
@@ -16,6 +16,6 @@ manifest:
           - cmsis
           - hal_stm32
       path: zephyr
-      revision: main
+      revision: hs-usb
   self:
     path: app

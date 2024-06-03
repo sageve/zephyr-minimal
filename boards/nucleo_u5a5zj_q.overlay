@@ -13,14 +13,26 @@
 			num-bidir-endpoints = <9>;
 			ram-size = <4096>;
 			maximum-speed = "high-speed";
+            /* USBPHYC_SEL: 0: HSE; 1: PLL1_P, 2: HSE/2; 3: PLL1_P/2 */
 			clocks = <&rcc STM32_CLOCK_BUS_AHB2 0x0000C000>,
+			         <&rcc STM32_SRC_HSE USBPHYC_SEL(0)>, /* see ref manual 11.8.47 */
 					/* udc driver DOES NOT activate following clocks. */
-			         <&rcc STM32_SRC_PLL1_P USBPHYC_SEL(1)>, /* see ref manual 11.8.47 */
 					 <&rcc STM32_CLOCK_BUS_APB3 0x00000002>; /* SYSCFG_CLK */
 			phys = <&otghs_phy>;
 			status = "disabled";
 		};
 	};
+};
+
+&clk_hse {
+    status = "okay";
+    clock-frequency = <DT_FREQ_M(16)>;
+};
+
+&pll1 {
+    clocks = <&clk_hse>;
+    div-m = < 4 >;
+    div-p = < 20 >;
 };
 
 zephyr_udc0: &usbotg_hs {
