@@ -1,0 +1,34 @@
+/ {
+    otghs_phy: otghs_phy {
+		compatible = "usb-nop-xceiv";
+		#phy-cells = <0>;
+	};
+
+    soc {
+		usbotg_hs: usb@42040000 {
+			compatible = "st,stm32-otghs";
+			reg = <0x42040000 0x20000>;
+			interrupts = <73 0>;
+			interrupt-names = "otghs";
+			num-bidir-endpoints = <9>;
+			ram-size = <4096>;
+			maximum-speed = "high-speed";
+			clocks = <&rcc STM32_CLOCK_BUS_AHB2 0x0000C000>,
+					/* udc driver DOES NOT activate following clocks. */
+			         <&rcc STM32_SRC_PLL1_P USBPHYC_SEL(1)>, /* see ref manual 11.8.47 */
+					 <&rcc STM32_CLOCK_BUS_APB3 0x00000002>; /* SYSCFG_CLK */
+			phys = <&otghs_phy>;
+			status = "disabled";
+		};
+	};
+};
+
+zephyr_udc0: &usbotg_hs {
+	pinctrl-0 = <&usb_otg_hs_dm_pa11 &usb_otg_hs_dp_pa12>;
+	pinctrl-names = "default";
+	status = "okay";
+
+    cdc_acm_uart0 {
+		compatible = "zephyr,cdc-acm-uart";
+	};
+};
